@@ -1,0 +1,1 @@
+<cfset layout('xml',rc.body)>

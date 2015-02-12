@@ -6,7 +6,7 @@ component accessors="true" {
 		return this;
 	}
 	
-	public void function default( rc ) {
+	public void function default(rc) {
 		rc.title = 'MotorSportReg - Main';
 	}
 }
