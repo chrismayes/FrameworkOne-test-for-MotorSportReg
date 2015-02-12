@@ -1,3 +1,3 @@
 <cfoutput>
-	<h1>MotorSportReg</h1>
+	<h1>#rc.title#</h1>
 </cfoutput>
