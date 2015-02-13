@@ -24,19 +24,25 @@ component accessors="true" {
 
 	public void function importTrackLaps(rc) {
 		local.trackId = rc.track;
-		local.xml = rc.xmlFile;
 		local.output = '';
 
 		//Handle File Upload
-		uploadFileMetadata = fileUpload(expandPath("../uploads"), 'xmlFile', '','makeUnique');
-		xmlFileContent = fileRead(expandPath('../uploads/' & uploadFileMetadata.serverFile));
-		local.importFileName = uploadFileMetadata.clientFile;
+		local.uploadFileMetadata = fileUpload(expandPath("../uploads"), 'xmlFile', '','makeUnique');
+		local.xmlFileContent = fileRead(expandPath('../uploads/' & local.uploadFileMetadata.serverFile));
+		local.importFileName = local.uploadFileMetadata.clientFile;
 
 		//Basic Validation
-		if(uploadFileMetadata.fileexisted && uploadFileMetadata.filesize > 0) {
-			//Do the import
-			
+		if(local.uploadFileMetadata.fileexisted && local.uploadFileMetadata.filesize > 0) {
 			local.output = '<MotorSportRegImport><result>true</result><message>Successful Upload</message></MotorSportRegImport>';
+			if(isXml(local.xmlFileContent)) {
+				local.xmlData = xmlParse(local.xmlFileContent);
+				if(!variables.apiService.importTrackLaps(local.trackId, local.xmlData, local.importFileName)) {
+					local.output = '<MotorSportRegImport><result>false</result><message>Import failure</message></MotorSportRegImport>';
+				}
+			}
+			else {
+				local.output = '<MotorSportRegImport><result>false</result><message>Nothing updated</message></MotorSportRegImport>';
+			}
 		} else {
 			local.output = '<MotorSportRegImport><result>false</result><message>Invalid File</message></MotorSportRegImport>';
 		}

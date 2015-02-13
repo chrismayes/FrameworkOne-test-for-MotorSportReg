@@ -28,10 +28,10 @@ VALUES (2, 'Road America', 'CenDiv')
 CREATE TABLE [dbo].[lap](
 	[lap_id] [int] NOT NULL,
 	[track_id] [int] NOT NULL,
-	[class] [char](4) NOT NULL,
+	[class] [char](10) NOT NULL,
 	[comment] [varchar](max) NOT NULL,
-	[lap_time] [int] NOT NULL,
-	[lap_date] [datetime] NOT NULL,
+	[lap_time] [time](7) NOT NULL,
+	[lap_date] [bigint] NOT NULL,
  CONSTRAINT [PK_lap] PRIMARY KEY CLUSTERED 
 (
 	[lap_id] ASC
