@@ -24,12 +24,18 @@ component
 		local.local.queryService.setDatasource('ds');
         local.queryService.addParam(name='trackId', value=arguments.trackId, cfsqltype='cf_sql_integer');
         local.queryService.setSQL("
-        	SELECT lap_time, class, lap_date, comment
-        	FROM lap
-        	WHERE track_id = ( :trackId )
-        		ORDER BY class
-        ");
-        return local.queryService.execute().getResult();
+			SELECT l.lap_time, l.class, l.lap_date, l.comment
+			FROM lap l
+			WHERE l.track_id = ( :trackId )
+				AND l.lap_id in (
+					SELECT max(lap_id)
+					FROM lap l2
+					WHERE l2.track_id = ( :trackId )
+					GROUP BY l2.class
+				)
+				ORDER BY l.class
+		");
+		return local.queryService.execute().getResult();
 	}
 
 	public query function apiLapRecord(required numeric trackId, required string class) {
