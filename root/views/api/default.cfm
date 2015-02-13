@@ -13,10 +13,20 @@
 				<input type="submit" value="Go">
 			</li>
 		</form>
-		<li>Current Track Records</li>
+		<form action="#buildUrl('api.currentTrackRecords')#" method="GET">
+			<li>
+				<b>Current Track Records (export)</b>
+				<select name="track">
+					<cfloop query="rc.qTracks">
+						<option value="#rc.qTracks.track_id#">#rc.qTracks.track_name# (#rc.qTracks.track_abbreviation#)</option>
+					</cfloop>
+				</select>
+				<input type="submit" value="Go">
+			</li>
+		</form>
 		<form action="#buildUrl('api.importTrackLaps')#" method="POST" enctype="multipart/form-data">
 			<li>
-				<b>Import Track Laps</b> ---
+				<b>Import Track Records from xml</b> ---
 				Select a Track:
 				<select name="track">
 					<cfloop query="rc.qTracks">

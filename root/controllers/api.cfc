@@ -24,7 +24,12 @@ component accessors="true" {
 
 	public void function currentTrackRecords(rc) {
 		local.trackId = rc.track;
-		rc.body = '';
+
+		local.qResult = variables.apiService.apiCurrentTrackRecords(local.trackId);
+		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
+		writeDump(local.xmlResult);abort;
+
+		rc.body = local.xmlResult;
 	}
 
 	public void function importTrackLaps(rc) {

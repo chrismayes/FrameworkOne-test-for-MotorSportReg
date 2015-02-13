@@ -19,7 +19,17 @@ component
         return local.queryService.execute().getResult();
 	}
 
-	public void function apiCurrentTrackRecords(required numeric trackId) {
+	public query function apiCurrentTrackRecords(required numeric trackId) {
+		var local.local.queryService = new Query();
+		local.local.queryService.setDatasource('ds');
+        local.queryService.addParam(name='trackId', value=arguments.trackId, cfsqltype='cf_sql_integer');
+        local.queryService.setSQL("
+        	SELECT lap_time, class, lap_date, comment
+        	FROM lap
+        	WHERE track_id = ( :trackId )
+        		ORDER BY class
+        ");
+        return local.queryService.execute().getResult();
 	}
 
 	public query function apiLapRecord(required numeric trackId, required string class) {
@@ -89,25 +99,35 @@ component
 			}
 		}
 
-		//Insert new or changed records into DB
-		if(arrayLen(local.nonDuplicateLaps)) {
-			local.historyId = addHistory(arguments.trackId, arguments.importFileName);
-			
-			if(local.historyId) {
-				for(i=1; i <= arrayLen(local.nonDuplicateLaps); i++) {
-					local.lapId = addLap(arguments.trackId, local.nonDuplicateLaps[i].class, local.nonDuplicateLaps[i].comment, parseDateTime(local.nonDuplicateLaps[i].laptime), local.nonDuplicateLaps[i].date);
-					if(local.lapId) {
-						addLapHistory(local.lapId, local.historyId);
+		transaction {
+			try {
+				//Insert new or changed records into DB
+				if(arrayLen(local.nonDuplicateLaps)) {
+					local.historyId = addHistory(arguments.trackId, arguments.importFileName);
+					
+					if(local.historyId) {
+						for(i=1; i <= arrayLen(local.nonDuplicateLaps); i++) {
+							local.lapId = addLap(arguments.trackId, local.nonDuplicateLaps[i].class, local.nonDuplicateLaps[i].comment, parseDateTime(local.nonDuplicateLaps[i].laptime), local.nonDuplicateLaps[i].date);
+							if(local.lapId) {
+								addLapHistory(local.lapId, local.historyId);
+							} else {
+								local.rVar = false;
+							}
+						}
 					} else {
 						local.rVar = false;
 					}
+				} else {
+					local.rVar = false;
 				}
-			} else {
-				local.rVar = false;
+		
+				transactionCommit();
+			} catch(any excpt) {
+				transactionRollback();
+				rethrow;
 			}
-		} else {
-			local.rVar = false;
 		}
+		
 		return local.rVar;
 	}
 	
