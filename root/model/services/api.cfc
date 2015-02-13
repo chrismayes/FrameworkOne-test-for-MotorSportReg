@@ -131,9 +131,20 @@ component
 		return local.rVar;
 	}
 	
-	public query function queryToMsrXml(required query qData) {
-		//Convert query to XML code...
-		return arguments.qData;
+	public string function queryToMsrXml(required query qData) {
+		local.columns = arguments.qData.columnlist;
+		local.rVar = '<TRACKRECORDS>';
+		for(var i=1; i<=arguments.qData.RecordCount; i++) {
+			local.line = '<RECORD';
+			if(listFindNoCase(local.columns, 'class')) local.line &= ' class="#trim(xmlFormat(arguments.qData.class[i]))#"';
+			if(listFindNoCase(local.columns, 'comment')) local.line &= ' comment="#xmlFormat(arguments.qData.comment[i])#"';
+			if(listFindNoCase(local.columns, 'lap_time')) local.line &= ' laptime="#xmlFormat(arguments.qData.lap_time[i])#"';
+			if(listFindNoCase(local.columns, 'lap_date')) local.line &= ' date="#xmlFormat(arguments.qData.lap_date[i])#"';
+			local.line &= '></RECORD>';
+			local.rVar &= local.line;
+		}
+		local.rVar &= '</TRACKRECORDS>';
+		return local.rVar;
 	}
 
 	//Private Methods

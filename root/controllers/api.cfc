@@ -17,7 +17,6 @@ component accessors="true" {
 
 		local.qResult = variables.apiService.apiAllTrackLapRecords(local.trackId);
 		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
-		writeDump(local.xmlResult);abort;
 
 		rc.body = local.xmlResult;
 	}
@@ -27,9 +26,8 @@ component accessors="true" {
 
 		local.qResult = variables.apiService.apiCurrentTrackRecords(local.trackId);
 		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
-		writeDump(local.xmlResult);abort;
 
-		rc.body = local.xmlResult;
+		rc.body = trim(local.xmlResult);
 	}
 
 	public void function importTrackLaps(rc) {
@@ -66,7 +64,6 @@ component accessors="true" {
 		
 		local.qResult = variables.apiService.apiLapRecord(local.trackId, local.classId);
 		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
-		writeDump(local.xmlResult);abort;
 		
 		rc.body = local.xmlResult;
 	}
@@ -76,7 +73,6 @@ component accessors="true" {
 
 		local.qResult = variables.apiService.apiOverallFastestRecord(local.trackId);
 		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
-		writeDump(local.xmlResult);abort;
 
 		rc.body = local.xmlResult;
 	}
@@ -87,7 +83,6 @@ component accessors="true" {
 
 		local.qResult = variables.apiService.apiTrackClassRecordHistory(local.trackId, local.classId);
 		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
-		writeDump(local.xmlResult);abort;
 		
 		rc.body = local.xmlResult;
 	}
