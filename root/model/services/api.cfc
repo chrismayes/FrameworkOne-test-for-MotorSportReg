@@ -12,13 +12,35 @@ component
 	public void function apiCurrentTrackRecords(required numeric trackId) {
 	}
 
-	public void function apiLapRecord(required numeric trackId, required numeric classId) {
+	public query function apiLapRecord(required numeric trackId, required string class) {
+		var local.local.queryService = new Query();
+		local.local.queryService.setDatasource('ds');
+        local.queryService.addParam(name='trackId', value=arguments.trackId, cfsqltype='cf_sql_integer');
+        local.queryService.addParam(name='class', value=arguments.class, cfsqltype='cf_sql_varchar');
+        local.queryService.setSQL("
+        	SELECT top 1 lap_time, lap_date, comment
+        	FROM lap
+        	WHERE track_id = ( :trackId )
+        		AND class = ( :class )
+        		ORDER BY lap_time ASC
+        ");
+        return local.queryService.execute().getResult();
 	}
 
-	public void function apiOverallFastestRecord(required numeric trackId) {
+	public query function apiOverallFastestRecord(required numeric trackId) {
+		var local.local.queryService = new Query();
+		local.local.queryService.setDatasource('ds');
+        local.queryService.addParam(name='trackId', value=arguments.trackId, cfsqltype='cf_sql_integer');
+        local.queryService.setSQL("
+        	SELECT TOP 1 lap_time, lap_date, comment
+        	FROM lap
+        	WHERE track_id = ( :trackId )
+        		ORDER BY lap_time ASC
+        ");
+        return local.queryService.execute().getResult();
 	}
 
-	public void function apiTrackClassRecordHistory(required numeric trackId, required numeric classId) {
+	public void function apiTrackClassRecordHistory(required numeric trackId, required numeric class) {
 	}
 
 	public query function getAllTracks() {
@@ -65,6 +87,10 @@ component
 			local.rVar = false;
 		}
 		return local.rVar;
+	}
+	
+	public query function queryToMsrXml(required query qData) {
+		return arguments.qData;
 	}
 
 	//Private Methods

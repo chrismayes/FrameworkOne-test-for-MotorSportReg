@@ -53,14 +53,22 @@ component accessors="true" {
 	public void function lapRecord(rc) {
 		local.trackId = rc.track;
 		local.classId = rc.class;
-
-		//hardcoded test data
-		rc.body = '<TRACKRECORDS><RECORD class="AS" comment="Andy McDermid - Ford Mustang - MILW - 08/30/2009" laptime="0:02:27.729" date="1251623817000000"/></TRACKRECORDS>';
+		
+		local.qResult = variables.apiService.apiLapRecord(local.trackId, local.classId);
+		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
+		writeDump(local.xmlResult);abort;
+		
+		rc.body = local.xmlResult;
 	}
 
 	public void function overallFastestRecord(rc) {
 		local.trackId = rc.track;
-		rc.body = '';
+
+		local.qResult = variables.apiService.apiOverallFastestRecord(local.trackId);
+		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
+		writeDump(local.xmlResult);abort;
+
+		rc.body = local.xmlResult;
 	}
 
 	public void function trackClassRecordHistory(rc) {
