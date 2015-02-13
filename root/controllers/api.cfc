@@ -14,7 +14,12 @@ component accessors="true" {
 
 	public void function allTrackLapRecords(rc) {
 		local.trackId = rc.track;
-		rc.body = '';
+
+		local.qResult = variables.apiService.apiAllTrackLapRecords(local.trackId);
+		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
+		writeDump(local.xmlResult);abort;
+
+		rc.body = local.xmlResult;
 	}
 
 	public void function currentTrackRecords(rc) {
@@ -74,7 +79,12 @@ component accessors="true" {
 	public void function trackClassRecordHistory(rc) {
 		local.trackId = rc.track;
 		local.classId = rc.class;
-		rc.body = '';
+
+		local.qResult = variables.apiService.apiTrackClassRecordHistory(local.trackId, local.classId);
+		local.xmlResult = variables.apiService.queryToMsrXml(local.qResult);
+		writeDump(local.xmlResult);abort;
+		
+		rc.body = local.xmlResult;
 	}
 
 }

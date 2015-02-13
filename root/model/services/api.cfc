@@ -6,7 +6,17 @@ component
 		return this;
     }
 
-	public void function apiAllTrackLapRecords(required numeric trackId) {
+	public query function apiAllTrackLapRecords(required numeric trackId) {
+		var local.local.queryService = new Query();
+		local.local.queryService.setDatasource('ds');
+        local.queryService.addParam(name='trackId', value=arguments.trackId, cfsqltype='cf_sql_integer');
+        local.queryService.setSQL("
+        	SELECT lap_time, class, lap_date, comment
+        	FROM lap
+        	WHERE track_id = ( :trackId )
+        		ORDER BY lap_time ASC
+        ");
+        return local.queryService.execute().getResult();
 	}
 
 	public void function apiCurrentTrackRecords(required numeric trackId) {
@@ -40,7 +50,19 @@ component
         return local.queryService.execute().getResult();
 	}
 
-	public void function apiTrackClassRecordHistory(required numeric trackId, required numeric class) {
+	public query function apiTrackClassRecordHistory(required numeric trackId, required string class) {
+		var local.local.queryService = new Query();
+		local.local.queryService.setDatasource('ds');
+        local.queryService.addParam(name='trackId', value=arguments.trackId, cfsqltype='cf_sql_integer');
+        local.queryService.addParam(name='class', value=arguments.class, cfsqltype='cf_sql_varchar');
+        local.queryService.setSQL("
+        	SELECT lap_time, lap_date, comment
+        	FROM lap
+        	WHERE track_id = ( :trackId )
+        		AND class = ( :class )
+        		ORDER BY lap_date DESC
+        ");
+        return local.queryService.execute().getResult();
 	}
 
 	public query function getAllTracks() {
@@ -49,7 +71,7 @@ component
         local.queryService.setSQL("
         	SELECT track_id, track_name, track_abbreviation
         	FROM track
-        	ORDER BY track_id
+        	ORDER BY track_id ASC
         ");
         return local.queryService.execute().getResult();
 	}
@@ -90,6 +112,7 @@ component
 	}
 	
 	public query function queryToMsrXml(required query qData) {
+		//Convert query to XML code...
 		return arguments.qData;
 	}
 
